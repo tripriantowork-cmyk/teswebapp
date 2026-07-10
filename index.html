@@ -3,1020 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Manajemen Karyawan</title>
+    <title>Sistem Inventori Teknisi</title>
+    <!-- Menggunakan Tailwind CSS untuk styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            min-height: 100vh;
-        }
-
-        /* NAVBAR */
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .navbar-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .navbar-status {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            font-size: 0.9rem;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .dot.online {
-            background: #4ade80;
-            animation: pulse 2s infinite;
-        }
-
-        .dot.offline {
-            background: #f87171;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        /* MAIN CONTAINER */
-        .main-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
-
-        /* STATS CARDS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-
-        .stat-card .number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .stat-card .label {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-
-        .stat-card .icon {
-            font-size: 1.5rem;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        /* CONTROLS */
-        .controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            flex: 1;
-            display: flex;
-            gap: 10px;
-            min-width: 250px;
-        }
-
-        .search-box input {
-            flex: 1;
-            padding: 10px 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: border-color 0.3s;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.95rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-success {
-            background: #34d399;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #34d399;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(52, 211, 153, 0.4);
-        }
-
-        .btn-danger {
-            background: #f87171;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #ef4444;
-            transform: translateY(-2px);
-        }
-
-        .btn-warning {
-            background: #fbbf24;
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #f59e0b;
-            transform: translateY(-2px);
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.8rem;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* TABLE */
-        .table-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            overflow-x: auto;
-            padding: 1rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
-
-        thead {
-            background: #f8fafc;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        th {
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 600;
-            color: #475569;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        tr:hover {
-            background: #f8fafc;
-        }
-
-        .badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-aktif {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .badge-tidak-aktif {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 6px;
-        }
-
-        /* MODAL */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h2 {
-            color: #333;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .modal-close:hover {
-            color: #333;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #475569;
-            font-size: 0.9rem;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .form-actions .btn {
-            flex: 1;
-            justify-content: center;
-        }
-
-        /* NOTIFICATION */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            color: white;
-            z-index: 2000;
-            animation: slideIn 0.3s ease;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .notification.success {
-            background: #34d399;
-        }
-
-        .notification.error {
-            background: #f87171;
-        }
-
-        .notification.info {
-            background: #60a5fa;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* LOADING */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.8);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .loading-overlay.show {
-            display: flex;
-        }
-
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #e5e7eb;
-            border-top: 5px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 0.75rem 1rem;
-            }
+    
+    <script>
+        // ======= PENTING: GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA =======
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxg23kqURoPko1kYcV6s5hhUCzj-0iNfPj-fAp8zB4IUhuNQFQnaaM7v8JgLWp3z_Et/exec'; 
+        // =========================================================================================
+
+        // Fungsi untuk mengambil data dari Google Sheets
+        async function loadData() {
+            const tableBody = document.getElementById('tableBody');
+            const loadingIndicator = document.getElementById('loadingIndicator');
             
-            .navbar-status {
-                flex-direction: column;
-                gap: 5px;
-                font-size: 0.8rem;
-            }
-            
-            .main-container {
-                padding: 0 1rem;
-                margin: 1rem auto;
-            }
-            
-            .controls {
-                flex-direction: column;
-            }
-            
-            .search-box {
-                min-width: unset;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-            
-            .modal-content {
-                padding: 1.5rem;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-brand">
-                <i class="fas fa-users"></i>
-                Manajemen Karyawan
-            </div>
-            <div class="navbar-status">
-                <span class="status-indicator">
-                    <span class="dot online" id="statusDot"></span>
-                    <span id="statusText">Online</span>
-                </span>
-                <span id="lastUpdate" style="font-size:0.8rem;opacity:0.8;">
-                    <i class="far fa-clock"></i> Belum update
-                </span>
-            </div>
-        </div>
-    </nav>
+            tableBody.innerHTML = '';
+            loadingIndicator.classList.remove('hidden');
 
-    <!-- MAIN CONTENT -->
-    <div class="main-container">
-        <!-- STATS -->
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card">
-                <div class="icon"><i class="fas fa-users"></i></div>
-                <div class="number" id="totalKaryawan">0</div>
-                <div class="label">Total Karyawan</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon"><i class="fas fa-user-check"></i></div>
-                <div class="number" id="aktifKaryawan">0</div>
-                <div class="label">Karyawan Aktif</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon"><i class="fas fa-coins"></i></div>
-                <div class="number" id="rataGaji">Rp 0</div>
-                <div class="label">Rata-rata Gaji</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon"><i class="fas fa-building"></i></div>
-                <div class="number" id="totalDepartemen">0</div>
-                <div class="label">Total Departemen</div>
-            </div>
-        </div>
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                
+                loadingIndicator.classList.add('hidden');
+                
+                if (data.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">Belum ada data inventori.</td></tr>`;
+                    return;
+                }
 
-        <!-- CONTROLS -->
-        <div class="controls">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Cari karyawan..." onkeyup="handleSearch(event)">
-                <button class="btn btn-primary" onclick="searchEmployees()">
-                    <i class="fas fa-search"></i> Cari
-                </button>
-            </div>
-            <button class="btn btn-success" onclick="openAddModal()">
-                <i class="fas fa-plus"></i> Tambah Karyawan
-            </button>
-            <button class="btn btn-primary" onclick="loadData()">
-                <i class="fas fa-sync"></i> Refresh
-            </button>
-        </div>
+                data.forEach(item => {
+                    // Menentukan warna badge berdasarkan kondisi
+                    let kondisiClass = 'bg-gray-100 text-gray-800';
+                    if (item['Kondisi'] === 'Baik') kondisiClass = 'bg-green-100 text-green-800';
+                    if (item['Kondisi'] === 'Rusak') kondisiClass = 'bg-red-100 text-red-800';
+                    if (item['Kondisi'] === 'Perbaikan') kondisiClass = 'bg-yellow-100 text-yellow-800';
 
-        <!-- TABLE -->
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Departemen</th>
-                        <th>Jabatan</th>
-                        <th>Gaji</th>
-                        <th>Tanggal Bergabung</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr>
-                        <td colspan="9" style="text-align:center;padding:3rem;color:#999;">
-                            <i class="fas fa-spinner fa-spin"></i> Memuat data...
+                    const row = document.createElement('tr');
+                    row.className = "border-b hover:bg-gray-50 transition";
+                    row.innerHTML = `
+                        <td class="px-6 py-4 font-medium text-gray-900">${item['Nama Tool']}</td>
+                        <td class="px-6 py-4 text-gray-700">${item['Ukuran']}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold ${kondisiClass}">
+                                ${item['Kondisi']}
+                            </span>
                         </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                loadingIndicator.classList.add('hidden');
+                tableBody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-red-500">Gagal memuat data. Pastikan URL Web App sudah benar.</td></tr>`;
+                console.error('Error fetching data:', error);
+            }
+        }
 
-    <!-- MODAL -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Tambah Karyawan</h2>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
+        // Fungsi untuk mengirim data baru ke Google Sheets
+        async function submitData(event) {
+            event.preventDefault();
+            
+            if(SCRIPT_URL === 'MASUKKAN_URL_WEB_APP_ANDA_DISINI') {
+                alert('Tolong masukkan URL Web App Google Apps Script Anda terlebih dahulu di dalam file index.html!');
+                return;
+            }
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            const originalBtnText = btnSubmit.innerHTML;
+            
+            const namaTool = document.getElementById('namaTool').value;
+            const ukuran = document.getElementById('ukuran').value;
+            const kondisi = document.getElementById('kondisi').value;
+            
+            const payload = {
+                namaTool: namaTool,
+                ukuran: ukuran,
+                kondisi: kondisi
+            };
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
+
+            try {
+                // Menggunakan text/plain agar tidak memicu preflight CORS issue pada Google Apps script
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Reset formulir dan reload tabel
+                    document.getElementById('inventoryForm').reset();
+                    loadData();
+                } else {
+                    alert('Terjadi kesalahan saat menyimpan data.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Gagal menghubungi server database. Periksa koneksi atau URL Apps Script Anda.');
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = originalBtnText;
+            }
+        }
+
+        // Memuat data pertama kali ketika halaman selesai dibuka
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800 font-sans p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <div class="text-center md:text-left bg-blue-600 rounded-xl p-6 shadow-md text-white">
+            <h1 class="text-3xl font-bold"><i class="fas fa-tools mr-3"></i>Sistem Inventori Teknisi</h1>
+            <p class="mt-2 text-blue-100">Manajemen Spare Part dan Tool Kerja</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Panel Input Form -->
+            <div class="md:col-span-1 bg-white p-6 rounded-xl shadow-md h-fit">
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Tambah Item Baru</h2>
+                <form id="inventoryForm" onsubmit="submitData(event)" class="space-y-4">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Tool/Spare Part</label>
+                        <input type="text" id="namaTool" required placeholder="Contoh: Kunci Inggris" 
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ukuran / Spesifikasi</label>
+                        <input type="text" id="ukuran" required placeholder="Contoh: 12 mm / Medium" 
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Kondisi</label>
+                        <select id="kondisi" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                            <option value="Baik">Baik (Siap Pakai)</option>
+                            <option value="Perbaikan">Sedang Diperbaiki</option>
+                            <option value="Rusak">Rusak</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="btnSubmit" 
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                        <i class="fas fa-plus mr-2"></i>Simpan Data
+                    </button>
+                </form>
             </div>
-            <form id="employeeForm" onsubmit="handleFormSubmit(event)">
-                <input type="hidden" id="editId">
-                
-                <div class="form-group">
-                    <label>Nama Lengkap *</label>
-                    <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" id="email" placeholder="Masukkan email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Departemen *</label>
-                    <input type="text" id="departemen" placeholder="Contoh: IT, HR, Marketing" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Jabatan *</label>
-                    <input type="text" id="jabatan" placeholder="Contoh: Manager, Staff" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Gaji</label>
-                    <input type="number" id="gaji" placeholder="0" min="0">
-                </div>
-                
-                <div class="form-group">
-                    <label>Tanggal Bergabung</label>
-                    <input type="date" id="tanggalBergabung">
-                </div>
-                
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="status">
-                        <option value="Aktif">Aktif</option>
-                        <option value="Tidak Aktif">Tidak Aktif</option>
-                    </select>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn" style="background:#e5e7eb;color:#333;" onclick="closeModal()">Batal</button>
-                    <button type="submit" class="btn btn-primary" id="submitBtn">
-                        <i class="fas fa-save"></i> Simpan
+
+            <!-- Panel Tabel Data -->
+            <div class="md:col-span-2 bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-700">Daftar Inventori</h2>
+                    <button onclick="loadData()" class="text-blue-600 hover:text-blue-800 transition" title="Muat Ulang Data">
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                 </div>
-            </form>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100 border-b">
+                                <th class="px-6 py-3 text-sm font-semibold text-gray-600">Nama Tool</th>
+                                <th class="px-6 py-3 text-sm font-semibold text-gray-600">Ukuran</th>
+                                <th class="px-6 py-3 text-sm font-semibold text-gray-600">Kondisi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Data akan dimuat melalui JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Indikator Loading -->
+                <div id="loadingIndicator" class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-3xl text-blue-500"></i>
+                    <p class="text-gray-500 mt-2">Memuat data dari database...</p>
+                </div>
+                
+            </div>
         </div>
     </div>
-
-    <!-- LOADING OVERLAY -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loader"></div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- JAVASCRIPT -->
-    <!-- ============================================ -->
-    <script>
-        // ============================================
-        // KONFIGURASI
-        // ============================================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxa0wybI68pb5YE_J8h7z4zQ0RVYZNd7awTyDKjXyVJrQ7wi8HSEqtGExYJtcsVX7J-/exec'; // Ganti dengan URL Apps Script Anda
-
-        // ============================================
-        // FUNGSI UTAMA
-        // ============================================
-
-        // Load data saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            
-            // Set default tanggal
-            document.getElementById('tanggalBergabung').valueAsDate = new Date();
-        });
-
-        // Load semua data
-        async function loadData() {
-            showLoading(true);
-            try {
-                const response = await fetch(`${API_URL}?action=getAll`);
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    renderTable(result.data);
-                    updateStats(result.data);
-                    updateStatus('online', 'Data berhasil dimuat');
-                } else {
-                    showNotification('error', result.message);
-                    updateStatus('offline', 'Gagal memuat data');
-                }
-            } catch (error) {
-                showNotification('error', 'Gagal terhubung ke server: ' + error.message);
-                updateStatus('offline', 'Server tidak tersedia');
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Render tabel
-        function renderTable(employees) {
-            const tbody = document.getElementById('tableBody');
-            
-            if (!employees || employees.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="9" style="text-align:center;padding:3rem;color:#999;">
-                            <i class="fas fa-inbox"></i> Tidak ada data
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = employees.map(emp => `
-                <tr>
-                    <td><strong>#${emp.ID}</strong></td>
-                    <td>${emp.Nama}</td>
-                    <td>${emp.Email}</td>
-                    <td>${emp.Departemen}</td>
-                    <td>${emp.Jabatan}</td>
-                    <td>${formatRupiah(emp.Gaji)}</td>
-                    <td>${formatDate(emp.TanggalBergabung)}</td>
-                    <td>
-                        <span class="badge ${emp.Status === 'Aktif' ? 'badge-aktif' : 'badge-tidak-aktif'}">
-                            ${emp.Status || 'Aktif'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-warning btn-sm" onclick="openEditModal(${emp.ID})">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteEmployee(${emp.ID})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Update statistik
-        function updateStats(employees) {
-            if (!employees || employees.length === 0) {
-                document.getElementById('totalKaryawan').textContent = '0';
-                document.getElementById('aktifKaryawan').textContent = '0';
-                document.getElementById('rataGaji').textContent = 'Rp 0';
-                document.getElementById('totalDepartemen').textContent = '0';
-                return;
-            }
-            
-            const total = employees.length;
-            const aktif = employees.filter(e => e.Status === 'Aktif').length;
-            const totalGaji = employees.reduce((sum, e) => sum + (e.Gaji || 0), 0);
-            const rataGaji = total > 0 ? Math.round(totalGaji / total) : 0;
-            const departemen = new Set(employees.map(e => e.Departemen));
-            
-            document.getElementById('totalKaryawan').textContent = total;
-            document.getElementById('aktifKaryawan').textContent = aktif;
-            document.getElementById('rataGaji').textContent = formatRupiah(rataGaji);
-            document.getElementById('totalDepartemen').textContent = departemen.size;
-        }
-
-        // Update status
-        function updateStatus(status, message) {
-            const dot = document.getElementById('statusDot');
-            const text = document.getElementById('statusText');
-            const update = document.getElementById('lastUpdate');
-            
-            if (status === 'online') {
-                dot.className = 'dot online';
-                text.textContent = 'Online';
-            } else {
-                dot.className = 'dot offline';
-                text.textContent = 'Offline';
-            }
-            
-            if (message) {
-                update.innerHTML = `<i class="far fa-clock"></i> ${message} - ${new Date().toLocaleTimeString('id-ID')}`;
-            }
-        }
-
-        // ============================================
-        // FUNGSI CRUD
-        // ============================================
-
-        // Search employees
-        async function searchEmployees() {
-            const query = document.getElementById('searchInput').value.trim();
-            
-            if (!query) {
-                loadData();
-                return;
-            }
-            
-            showLoading(true);
-            try {
-                const response = await fetch(`${API_URL}?action=search&q=${encodeURIComponent(query)}`);
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    renderTable(result.data);
-                    updateStats(result.data);
-                    showNotification('info', `Ditemukan ${result.data.length} data`);
-                } else {
-                    showNotification('error', result.message);
-                }
-            } catch (error) {
-                showNotification('error', 'Gagal mencari data: ' + error.message);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Handle search on enter key
-        function handleSearch(e) {
-            if (e.key === 'Enter') {
-                searchEmployees();
-            }
-        }
-
-        // Open add modal
-        function openAddModal() {
-            document.getElementById('modalTitle').textContent = 'Tambah Karyawan';
-            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Simpan';
-            document.getElementById('employeeForm').reset();
-            document.getElementById('editId').value = '';
-            document.getElementById('tanggalBergabung').valueAsDate = new Date();
-            document.getElementById('modal').classList.add('show');
-        }
-
-        // Open edit modal
-        async function openEditModal(id) {
-            try {
-                const response = await fetch(`${API_URL}?action=getById&id=${id}`);
-                const result = await response.json();
-                
-                if (result.status === 'success' && result.data) {
-                    const emp = result.data;
-                    
-                    document.getElementById('modalTitle').textContent = 'Edit Karyawan';
-                    document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Update';
-                    document.getElementById('editId').value = emp.ID;
-                    document.getElementById('nama').value = emp.Nama;
-                    document.getElementById('email').value = emp.Email;
-                    document.getElementById('departemen').value = emp.Departemen;
-                    document.getElementById('jabatan').value = emp.Jabatan;
-                    document.getElementById('gaji').value = emp.Gaji;
-                    document.getElementById('tanggalBergabung').value = emp.TanggalBergabung;
-                    document.getElementById('status').value = emp.Status || 'Aktif';
-                    
-                    document.getElementById('modal').classList.add('show');
-                } else {
-                    showNotification('error', 'Data tidak ditemukan');
-                }
-            } catch (error) {
-                showNotification('error', 'Gagal mengambil data: ' + error.message);
-            }
-        }
-
-        // Close modal
-        function closeModal() {
-            document.getElementById('modal').classList.remove('show');
-        }
-
-        // Handle form submit
-        async function handleFormSubmit(e) {
-            e.preventDefault();
-            
-            const editId = document.getElementById('editId').value;
-            const data = {
-                Nama: document.getElementById('nama').value.trim(),
-                Email: document.getElementById('email').value.trim(),
-                Departemen: document.getElementById('departemen').value.trim(),
-                Jabatan: document.getElementById('jabatan').value.trim(),
-                Gaji: parseInt(document.getElementById('gaji').value) || 0,
-                TanggalBergabung: document.getElementById('tanggalBergabung').value,
-                Status: document.getElementById('status').value
-            };
-            
-            if (editId) {
-                data.ID = parseInt(editId);
-                await updateEmployee(data);
-            } else {
-                await addEmployee(data);
-            }
-        }
-
-        // Add employee
-        async function addEmployee(data) {
-            showLoading(true);
-            try {
-                const response = await fetch(`${API_URL}?action=add`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    showNotification('success', 'Data berhasil ditambahkan');
-                    closeModal();
-                    loadData();
-                } else {
-                    showNotification('error', result.message);
-                }
-            } catch (error) {
-                showNotification('error', 'Gagal menambah data: ' + error.message);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Update employee
-        async function updateEmployee(data) {
-            showLoading(true);
-            try {
-                const response = await fetch(`${API_URL}?action=update`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    showNotification('success', 'Data berhasil diupdate');
-                    closeModal();
-                    loadData();
-                } else {
-                    showNotification('error', result.message);
-                }
-            } catch (error) {
-                showNotification('error', 'Gagal update data: ' + error.message);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Delete employee
-        async function deleteEmployee(id) {
-            if (!confirm(`Yakin ingin menghapus karyawan dengan ID #${id}?`)) {
-                return;
-            }
-            
-            showLoading(true);
-            try {
-                const response = await fetch(`${API_URL}?action=delete&id=${id}`, {
-                    method: 'POST'
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    showNotification('success', 'Data berhasil dihapus');
-                    loadData();
-                } else {
-                    showNotification('error', result.message);
-                }
-            } catch (error) {
-                showNotification('error', 'Gagal hapus data: ' + error.message);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // ============================================
-        // FUNGSI UTILITY
-        // ============================================
-
-        function formatRupiah(amount) {
-            if (!amount) return 'Rp 0';
-            return 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        }
-
-        function showNotification(type, message) {
-            // Hapus notifikasi lama
-            const oldNotif = document.querySelector('.notification');
-            if (oldNotif) oldNotif.remove();
-            
-            // Buat notifikasi baru
-            const notif = document.createElement('div');
-            notif.className = `notification ${type}`;
-            notif.innerHTML = `
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-                ${message}
-            `;
-            
-            document.body.appendChild(notif);
-            
-            // Auto close setelah 3 detik
-            setTimeout(() => {
-                notif.style.opacity = '0';
-                setTimeout(() => notif.remove(), 300);
-            }, 3000);
-        }
-
-        function showLoading(show) {
-            const overlay = document.getElementById('loadingOverlay');
-            if (show) {
-                overlay.classList.add('show');
-            } else {
-                overlay.classList.remove('show');
-            }
-        }
-
-        // Click outside modal to close
-        document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // ============================================
-        // AUTO REFRESH (Setiap 30 detik)
-        // ============================================
-        setInterval(() => {
-            if (!document.querySelector('.modal.show')) {
-                loadData();
-            }
-        }, 30000);
-    </script>
 </body>
 </html>
